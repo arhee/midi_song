@@ -1,0 +1,14 @@
+*.zip
+*.mid
+*.pyc
+*.csv
+*-checkpoint.ipynb
+*.Rproj
+*.Rproj.user
+*.Rhistory
+*.RData
+*.DS_Store
+*.rdb
+*.Rdata
+*.rdx
+*.dcf
