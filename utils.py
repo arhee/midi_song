@@ -69,3 +69,45 @@ def segmentize(musicmat, maxlen, step):
     y = np.stack(y)
     return X,y
 
+def transpose(score, newkey='C'):
+    """ Transposes the midi file to C.
+    Args: music21.stream.Score
+    Returns: music21.stream.Score
+    """
+
+    keys = {'C':0,
+            'C#':1,
+            'D-':1,
+            'D':2,
+            'D#':3,
+            'E-':3,
+            'E':4,
+            'F-':4,
+            'E#':5,
+            'F':5,
+            'F#':6,
+            'G-':6,
+            'G':7,
+            'G#':8,
+            'A-':8,
+            'A':9,
+            'A#':10,
+            'B-':10,
+            'B':11,
+            'B#':0,
+           }
+
+    oldkey = score.analyze('key')
+
+    if oldkey.mode == "major":
+        halfSteps = keys[oldkey.tonic.name.upper()]
+
+    elif oldkey.mode == "minor":
+        halfSteps = keys[oldkey.tonic.name.upper()] + 4
+
+    halfSteps %= 12
+
+    newscore = score.transpose(-halfSteps)
+    trans_key = newscore.analyze('key')
+    print oldkey, trans_key
+    return newscore
