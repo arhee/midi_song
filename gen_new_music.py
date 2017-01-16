@@ -52,8 +52,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Trains model on data')
     parser.add_argument('-d', '--data', action='store', required=True,
         help='pickle data to train on')
-    parser.add_argument('-o', '--outfile', action='store', required=True,
+    parser.add_argument('-m', '--model', action='store', required=True,
         help='filename for model params')
+    parser.add_argument('-o', '--outfile', action='store', required=True,
+        help='filename for new song')
 
     opts, args = parser.parse_known_args(sys.argv[1:])
     main()
