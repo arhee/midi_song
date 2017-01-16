@@ -55,7 +55,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Trains model on data')
     parser.add_argument('-d', '--model_dir', action='store', required=True,
         help='filename for model params')
-    parser.add_argument('-m', '--model', action='store', required=True,
+    parser.add_argument('-m', '--model_name', action='store', required=True,
         help='filename for model params')
     parser.add_argument('-o', '--outfile', action='store', required=True,
         help='filename for new song')
