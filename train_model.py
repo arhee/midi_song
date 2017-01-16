@@ -3,7 +3,7 @@ import pickle
 from models import *
 
 def main():
-    with open(opts.data) as f:
+    with open(opts.data_file) as f:
         data = pickle.load(f)
 
     X = data['X']
@@ -21,7 +21,7 @@ def main():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Trains model on data')
-    parser.add_argument('-d', '--data', action='store', required=True,
+    parser.add_argument('-d', '--data_file', action='store', required=True,
         help='pickle data to train on')
     parser.add_argument('-o', '--outfile', action='store', required=True,
         help='filename for model params')

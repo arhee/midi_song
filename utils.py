@@ -17,6 +17,9 @@ def get_notelist(mido_obj, res=8, note_range=(36,84)):
     Args:
         res (int) - resolution.  8 is eighth notes, 4 quarter, etc...
         note_range (tuple) - middle C = 60
+    Returns:
+        counter (int) - total amount of time elapsed for song
+        notelist (list) - a list of notes in (pitch, start, duration) format
     """
 
     # this gives # of ticks in a column of the piano sheet
@@ -27,6 +30,7 @@ def get_notelist(mido_obj, res=8, note_range=(36,84)):
     counter = 0
     notelist = []
 
+    # this needs to be fixed in the future for multiinstrument songs
     rawmsgs = [msg for track in mido_obj.tracks for msg in track]
 
     # have to reset counter when a new track is detected
@@ -38,14 +42,19 @@ def get_notelist(mido_obj, res=8, note_range=(36,84)):
         counter += msg.time
 
         if msg.type == 'note_on' and msg.velocity > 0:
-            active_notes[msg.note - note_range[0]] = counter
+            try:
+                active_notes[msg.note - note_range[0]] = counter
+            except IndexError:
+                pass
 
         elif msg.type == 'note_off' or (msg.type == 'note_on' and msg.velocity == 0):
             # fill everything up to this with 1s
-            start = active_notes[msg.note - note_range[0]]  #round this section
-
-            notelist.append((msg.note, int(ceil(start/tick_step)), int(ceil((counter-start)/tick_step))))
-            active_notes[msg.note - note_range[0]] = 0
+            try:
+                start = active_notes[msg.note - note_range[0]]  #round this section
+                notelist.append((msg.note, int(ceil(start/tick_step)), int(ceil((counter-start)/tick_step))))
+                active_notes[msg.note - note_range[0]] = 0
+            except IndexError:
+                pass
 
     notelist = sorted(notelist, key=lambda x: x[1])
     return (counter, notelist)
@@ -53,12 +62,15 @@ def get_notelist(mido_obj, res=8, note_range=(36,84)):
 def make_musicmat(notelist, steps, note_range=(36,84)):
     """ turns a notelist into a musicmat object
     """
-    music_mat = np.zeros([steps, int(np.diff(note_range))])
+    music_mat = np.zeros([steps+1, int(np.diff(note_range))])
     cnt = 0
     for nt in notelist:
         c = range(nt[1], (nt[2] + nt[1]))
         r = [nt[0] - note_range[0]] * len(c)
-        music_mat[c,r] = np.array([1] * len(r) )
+        try:
+            music_mat[c,r] = np.array([1] * len(r) )
+        except IndexError:
+            pass
         cnt += 1
     return music_mat
 
