@@ -12,3 +12,11 @@
 *.Rdata
 *.rdx
 *.dcf
+bin
+.git
+lib
+*.h5
+.idea
+include
+pip-selfcheck.json
+*.swp
