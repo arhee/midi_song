@@ -3,12 +3,14 @@
 
 import numpy as np
 from math import ceil
-from mido import Message, MidiFile, MidiTrack
+from mido import Message, MidiTrack
 
 __all__ = ['get_notelist',
            'make_musicmat',
            'transpose',
-           'segmentize']
+           'segmentize',
+           'notelist_to_track',
+           'new_song_mat']
 
 def get_notelist(mido_obj, res=8, note_range=(36,84)):
     """
@@ -119,12 +121,15 @@ def transpose(score, newkey='C'):
     return newscore
 
 
-def mm2midi():
-    """ Converts musicmat object to midi format
+def notelist_to_track(new_song, tick_step=100, note_range=(36, 84)):
+    """ Converts a notelist to a miditrack.
+    Assumes that adjacent notes are held
     """
     track = MidiTrack()
     nsteps = new_song.shape[0]
     last_event = 0
+    active_notes = np.zeros(new_song.shape[-1])
+
     for ix in range(nsteps):
         step_slice = new_song[ix, :]
 
@@ -144,8 +149,33 @@ def mm2midi():
                 track.append(Message('note_off', note=note, velocity=127, time=int(tick_step * last_event)))
                 active_notes[note_ix] = 0
             last_event = 0
+    return track
 
-    # save the file
-    mid = MidiFile()
-    mid.tracks.append(track)
-    mid.save('new_song.mid')
+
+def new_song_mat(model, psg_seed, tsteps=100):
+    """ turns a passage seed to a song with #tsteps
+    """
+    new_song = []
+    x = psg_seed
+    new_song.append(x)
+    nnotes = psg_seed.shape[-1]
+
+    for _ in range(tsteps):
+        preds = model.predict(x, verbose=0)[0]
+
+        # this is a timestep slice
+        new_note = np.zeros(nnotes)
+        new_note[preds.argmax()] = 1
+        new_note = new_note[None, None, :]
+
+        # redo the seed psg
+        psg = np.concatenate([x, new_note], axis=1)
+        x = psg[:, 1:, :]
+
+        new_song.append(new_note)
+
+    new_song = np.concatenate(new_song, axis=1)
+    new_song = np.squeeze(new_song)
+    return new_song
+
+
