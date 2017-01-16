@@ -9,9 +9,14 @@ def main():
     X = data['X']
     y = data['y']
 
-    model = default_model()
-
+    train_len = X.shape[1]
+    model = default_model(train_len)
     model.fit(X,y, batch_size=50, nb_epoch=1)
+
+    print 'saving data'
+    with open(opts.outfile + '.json', 'w') as json_file:
+        json_file.write(model.to_json())
+    model.save_weights(opts.outfile + '.h5')
 
 
 if __name__ == '__main__':
