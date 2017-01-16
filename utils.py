@@ -3,6 +3,7 @@
 
 import numpy as np
 from math import ceil
+from mido import Message, MidiFile, MidiTrack
 
 __all__ = ['get_notelist',
            'make_musicmat',
@@ -116,3 +117,35 @@ def transpose(score, newkey='C'):
     trans_key = newscore.analyze('key')
     print oldkey, trans_key
     return newscore
+
+
+def mm2midi():
+    """ Converts musicmat object to midi format
+    """
+    track = MidiTrack()
+    nsteps = new_song.shape[0]
+    last_event = 0
+    for ix in range(nsteps):
+        step_slice = new_song[ix, :]
+
+        diff = [ix for ix, (x, y) in enumerate(zip(step_slice, active_notes)) if x != y]
+        if len(diff) == 0:
+            last_event += 1
+            continue
+
+        # this means there is a difference
+        for note_ix in diff:
+            # off to on
+            note = note_ix + min(note_range)
+            if active_notes[note_ix] == 0:
+                track.append(Message('note_on', note=note, velocity=127, time=int(tick_step * last_event)))
+                active_notes[note_ix] = 1
+            else:
+                track.append(Message('note_off', note=note, velocity=127, time=int(tick_step * last_event)))
+                active_notes[note_ix] = 0
+            last_event = 0
+
+    # save the file
+    mid = MidiFile()
+    mid.tracks.append(track)
+    mid.save('new_song.mid')

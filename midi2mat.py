@@ -49,12 +49,13 @@ def main():
         pickle.dump({'X': X, 'y':y}, f)
 
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Converts midi files to a matrix')
     parser.add_argument('-d', '--dir', action='store', required=True,
-        help='Set destination -- backstage, prospecting')
+        help='directory for midi data')
     parser.add_argument('-o', '--outfile', action='store', required=True,
-        help='Set user authorization.')
+        help='outfile name')
 
     opts, args = parser.parse_known_args(sys.argv[1:])
     main()
