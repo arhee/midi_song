@@ -4,6 +4,7 @@ from utils import *
 from keras.models import model_from_json
 import random
 from mido import MidiFile
+import sys
 
 # load model from disk
 # load sample passage
