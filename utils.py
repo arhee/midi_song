@@ -4,6 +4,11 @@
 import numpy as np
 from math import ceil
 
+__all__ = ['get_notelist',
+           'make_musicmat',
+           'transpose',
+           'segmentize']
+
 def get_notelist(mido_obj, res=8, note_range=(36,84)):
     """
     Args:

@@ -20,3 +20,4 @@ lib
 include
 pip-selfcheck.json
 *.swp
+data
