@@ -20,7 +20,7 @@ def default_model(train_len, note_range=(36,84)):
     model = Sequential()
     model.add(LSTM(128, input_shape=(train_len, nnotes)))
     model.add(Dense(nnotes))
-    #model.add(Dense(nnotes))
+    model.add(Dense(nnotes))
     model.add(Activation('softmax'))
     optimizer = RMSprop(lr=0.01)
     model.compile(loss='categorical_crossentropy', optimizer=optimizer)

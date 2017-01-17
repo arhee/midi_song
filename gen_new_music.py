@@ -27,7 +27,7 @@ def load_model(model_dir, model_name):
 
 
 def load_sample_psg():
-    data_fname = 'data/models/transposed_licks.p'
+    data_fname = 'mmat.p'
     with open(data_fname) as f:
         data = pickle.load(f)
 
@@ -44,7 +44,7 @@ def main():
     model = load_model(model_dir, model_name)
     psg = load_sample_psg()
 
-    mmat = new_song_mat(model, psg)
+    mmat = new_song_mat(model, psg, tsteps=300)
     track = notelist_to_track(mmat, tick_step=32)
     mid = MidiFile()
     mid.tracks.append(track)
@@ -62,9 +62,3 @@ if __name__ == '__main__':
 
     opts, args = parser.parse_known_args(sys.argv[1:])
     main()
-
-
-    # save the file
-    mid = MidiFile()
-    mid.tracks.append(track)
-    mid.save('new_song.mid')

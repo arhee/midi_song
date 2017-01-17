@@ -11,7 +11,7 @@ def main():
 
     train_len = X.shape[1]
     model = default_model(train_len)
-    model.fit(X,y, batch_size=50, nb_epoch=1)
+    model.fit(X,y, batch_size=50, nb_epoch=20)
 
     print 'saving data'
     with open(opts.outfile + '.json', 'w') as json_file:
